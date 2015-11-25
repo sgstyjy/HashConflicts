@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 
 import jxl.Sheet;
 import jxl.Workbook;
@@ -35,10 +36,12 @@ public class FindConflicts {
 			byte[] bb1 = new byte[Constant.blocksize];
 			byte[] bb2 = new byte[Constant.blocksize];
 			Node[] bkdrlist, aplist;
+			System.out.println("The block size is: "+ Constant.blocksize);
 			Constant.TOTAL_CONFLICTS = 0;
 			switch (Constant.HASH_METHOD)
 			{
 			case 0:
+				System.out.println("Coming in the case 0 of FindConflicts()!");
 				sheetap = book.getSheet(0);
 				aplist = generateArray(sheetap, Constant.nodenumlistap);
 				
@@ -52,6 +55,7 @@ public class FindConflicts {
 				book.close();
 				break;
 			case 1:
+				System.out.println("Coming in the case 1 of FindConflicts()!");
 				sheetbkdr = book.getSheet(0);
 				bkdrlist = generateArray(sheetbkdr, Constant.nodenumlistbkdr);
 				
@@ -65,6 +69,7 @@ public class FindConflicts {
 				book.close();
 				break;
 			case 2:
+				System.out.println("Coming in the case 2 of FindConflicts()!");
 				sheetbkdr = book.getSheet(0);
 				sheetap = book.getSheet(1);
 				bkdrlist = generateArray(sheetbkdr, Constant.nodenumlistbkdr);
@@ -94,10 +99,10 @@ public class FindConflicts {
 	     int i = 0;
 	     //initialize the nodenumlist[]
 	     for (int j=0; j<Constant.PRIME;j++)
-	   	     nodenumlist[j]=0;
-	         Node[] nodelist = new Node[Constant.PRIME];
-	    	 while (i< Constant.totalblocks){
-	    	     String tempstr = sheet.getCell(i/Constant.COLUMNS, i%Constant.COLUMNS).getContents();
+	   	     	nodenumlist[j]=0;
+	     Node[] nodelist = new Node[Constant.PRIME];
+	     while (i< Constant.totalblocks){
+	    	 	String tempstr = sheet.getCell(i/Constant.COLUMNS, i%Constant.COLUMNS).getContents();
 	    	     long abst = Long.parseLong(tempstr);
 	    	     int position = (int) (Math.abs(abst)%Constant.PRIME);                   //calculate the position of the hash value in the node list
 	    	 	        
@@ -119,7 +124,6 @@ public class FindConflicts {
 	    	    nodenumlist[position]++;
 	    	    i++;
 	    	}
-	    	     
 			return nodelist;	 
 	 }
 	    
@@ -131,6 +135,8 @@ public class FindConflicts {
 	    //if this position has  nodes
 	    Node tempnode = nodelist[position];
 	    //String tempstr1 = Long.toString(hashvalue);
+	    //if(blockn < 10)
+	    	//System.out.println("The original conflict number is: "+ Constant.TOTAL_CONFLICTS);
 	    byte[] bb1 = new byte[Constant.blocksize];
 	    byte[] bb2 = new byte[Constant.blocksize];
 	    while(tempnode!=null){
@@ -138,11 +144,18 @@ public class FindConflicts {
 	        int tempblockn = tempnode.getBlocknum();
 	        if((templong == hashvalue) && (tempblockn != blockn))
 	        {
-	        	file_reader.seek(blockn);
+	        	file_reader.seek(blockn*Constant.blocksize);
+	        	//System.out.println("the read pointer is at: "+ file_reader.getFilePointer());
 				file_reader.read(bb1);
-				file_reader.seek(tempblockn);
+				String str1 = new String(bb1);
+				//System.out.println("The length of str1 is: "+str1.length());
+				file_reader.seek(tempblockn*Constant.blocksize);
+				//System.out.println("the read pointer is at: "+ file_reader.getFilePointer());
 				file_reader.read(bb2);
-				if(!bb1.equals(bb2))
+				String str2 = new String(bb2);
+				//System.out.println("The length of str2 is: "+str2.length());
+				//if(!Arrays.equals(bb1, bb2))
+				if(!str1.equals(str2))
 				{
 					Constant.TOTAL_CONFLICTS++;
 				}
@@ -176,11 +189,13 @@ public class FindConflicts {
 	    	        int tempblockn2 = tempnode2.getBlocknum();
 	    	        if((templong2 == hashvalue2) && (tempblockn1 ==tempblockn2) && (tempblockn2 !=blockn))
 	    	        {
-	    	        	file_reader.seek(blockn);
+	    	        	file_reader.seek(blockn*Constant.blocksize);
 	    				file_reader.read(bb1);
-	    				file_reader.seek(tempblockn1);
+	    				String str1 = new String(bb1);
+	    				file_reader.seek(tempblockn1*Constant.blocksize);
 	    				file_reader.read(bb2);
-	    				if(!bb1.equals(bb2))
+	    				String str2 = new String(bb2);
+	    				if(!str1.equals(str2))
 	    				{
 	    					Constant.TOTAL_CONFLICTS++;
 	    				}

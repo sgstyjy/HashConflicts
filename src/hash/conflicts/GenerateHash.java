@@ -26,6 +26,7 @@ public class GenerateHash {
 		File file_out = new File(hashtable);
 		OutputStream writer = new FileOutputStream(file_out);
 		WritableWorkbook workbook = Workbook.createWorkbook(writer);
+		
 		WritableSheet sheetap,sheetbkdr;
 		AP aphasher;
 		BKDR bkdrhasher;
@@ -41,6 +42,7 @@ public class GenerateHash {
 		switch(Constant.HASH_METHOD)
 		{
 		case 0: 
+			    System.out.println("Coming in the case 0 of GenerateHash()!");
 			 	sheetap = workbook.createSheet("AP",0);
 			 	aphasher = new AP();
 			 
@@ -69,6 +71,7 @@ public class GenerateHash {
 				}
 			break;
 		case 1:
+			System.out.println("Coming in the case 1 of GenerateHash()!");
 		    sheetbkdr = workbook.createSheet("BKDR",0);
 		    bkdrhasher = new BKDR();
 		    
@@ -97,6 +100,7 @@ public class GenerateHash {
 			}
 			break;
 		case 2:
+			System.out.println("Coming in the case 2 of GenerateHash()!");
 			 sheetbkdr = workbook.createSheet("BKDR",0);
 			 sheetap = workbook.createSheet("AP",1);
 			 bkdrhasher = new BKDR();
@@ -123,9 +127,12 @@ public class GenerateHash {
 				reader.read(bb);
 				temp = new String (bb);
 				bkdrabs = bkdrhasher.bkdrhash(temp);
+				
 				apabs = aphasher.aphash(temp);	    	
 				tempbkdr = Long.toString(bkdrabs);
+				System.out.println("The length of bkdr abstract is: "+tempbkdr.length());
 				tempap = Long.toString(apabs);
+				System.out.println("The length of ap abstract is: "+tempap.length());
 				tempcellbkdr = new Label (blocknum/Constant.COLUMNS,blocknum%Constant.COLUMNS, tempbkdr);
 				tempcellap = new Label (blocknum/Constant.COLUMNS,blocknum%Constant.COLUMNS, tempap);
 				sheetbkdr.addCell(tempcellbkdr);
