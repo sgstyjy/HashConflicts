@@ -35,6 +35,7 @@ public class FindConflicts {
 			byte[] bb1 = new byte[Constant.blocksize];
 			byte[] bb2 = new byte[Constant.blocksize];
 			Node[] bkdrlist, aplist;
+			Constant.TOTAL_CONFLICTS = 0;
 			switch (Constant.HASH_METHOD)
 			{
 			case 0:
@@ -142,11 +143,11 @@ public class FindConflicts {
 				file_reader.seek(tempblockn);
 				file_reader.read(bb2);
 				if(!bb1.equals(bb2))
+				{
 					Constant.TOTAL_CONFLICTS++;
-	        	tempnode = tempnode.getNext();
+				}
 	        }
-	        else 
-	       	    tempnode = tempnode.getNext();
+	       	tempnode = tempnode.getNext();
 	    }
 		return;
 	}
@@ -155,35 +156,39 @@ public class FindConflicts {
 		int position1 =(int) (Math.abs(hashvalue1)%Constant.PRIME);
 		int position2 =(int) (Math.abs(hashvalue2)%Constant.PRIME);
 		//if this position does not have a node
-		if (nodenumlist1[position1]==0)
+		if (nodenumlist1[position1]==0 || nodenumlist2[position2]==0)
 	        return;
 	    //if this position has  nodes
-		Node tempnode1 = nodelist2[position1];
-	    Node tempnode2 = nodelist2[position2];
+		Node tempnode1 = nodelist1[position1];
 	    //String tempstr1 = Long.toString(hashvalue);
 	    byte[] bb1 = new byte[Constant.blocksize];
 	    byte[] bb2 = new byte[Constant.blocksize];
-	    while(tempnode1!=null && tempnode2 != null){
+	    while(tempnode1!=null){
 	        long templong1 = tempnode1.getHashvalue();
 	        int tempblockn1 = tempnode1.getBlocknum();
-	        long templong2 = tempnode2.getHashvalue();
-	        int tempblockn2 = tempnode2.getBlocknum();
-	        if((templong1 == hashvalue1) && (templong2 == hashvalue2) && (tempblockn1 ==tempblockn2) && (tempblockn1!=blockn))
+	        //find same hash value in the first hash list
+	        if(templong1 == hashvalue1 && tempblockn1 != blockn)
 	        {
-	        	file_reader.seek(blockn);
-				file_reader.read(bb1);
-				file_reader.seek(tempblockn1);
-				file_reader.read(bb2);
-				if(!bb1.equals(bb2))
-					Constant.TOTAL_CONFLICTS++;
-	        	tempnode1 = tempnode1.getNext();
-	        	tempnode2 = tempnode2.getNext();
+	        	Node tempnode2 = nodelist2[position2];
+	        	while(tempnode2 != null)
+		        {
+	        		long templong2 = tempnode2.getHashvalue();
+	    	        int tempblockn2 = tempnode2.getBlocknum();
+	    	        if((templong2 == hashvalue2) && (tempblockn1 ==tempblockn2) && (tempblockn2 !=blockn))
+	    	        {
+	    	        	file_reader.seek(blockn);
+	    				file_reader.read(bb1);
+	    				file_reader.seek(tempblockn1);
+	    				file_reader.read(bb2);
+	    				if(!bb1.equals(bb2))
+	    				{
+	    					Constant.TOTAL_CONFLICTS++;
+	    				}
+	    	        }
+	    	        tempnode2 = tempnode2.getNext();
+		        }
 	        }
-	        else 
-	        {
-	       	    tempnode1 = tempnode1.getNext();
-	       	    tempnode2 = tempnode2.getNext();
-	        }
+	        tempnode1 = tempnode1.getNext();
 	    }
 		return;
 	}
