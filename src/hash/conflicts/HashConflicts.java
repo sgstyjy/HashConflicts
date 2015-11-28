@@ -48,11 +48,15 @@ public class HashConflicts {
 		Constant.hashtable=strbuilder1.toString();
 		System.out.println("The name of hashtable is: "+Constant.hashtable);
 		
+		Long START_TIME = System.currentTimeMillis();
 		//generate the hashtables
 		GenerateHash hashgenerater = new GenerateHash();  
 		hashgenerater.generater(Constant.file,Constant.hashtable);
+		Long END_TIME = System.currentTimeMillis();
+		Long Duration = END_TIME - START_TIME;
+		System.out.println("The hash time is:"+ Duration);
 		FindConflicts finder = new FindConflicts();
 		finder.find(Constant.file, Constant.hashtable);
+		
 	}
-
 }
