@@ -8,7 +8,7 @@ public class Constant {
 	public static int COLUMNS = 10000;
 	public static int totalblocks=0;
 	public static int TOTAL_CONFLICTS = 0;
-	public static int PRIME = 10007;      //one big prime number, it is used for deciding the node list length
+	public static int PRIME = 105341; //20117;      //one big prime number, it is used for deciding the node list length， 10007
 	public static int[]  nodenumlistbkdr = new int[Constant.PRIME];     //the node number of each position in the list for the BKDR table
 	public static int[]  nodenumlistap = new int[Constant.PRIME];       //the node number of each position in the list for the AP table
 }

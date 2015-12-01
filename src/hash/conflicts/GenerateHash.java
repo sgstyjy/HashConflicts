@@ -34,6 +34,7 @@ public class GenerateHash {
 		Label tempcellap, tempcellbkdr;
 		int blocknum = 0;
 		int position = 0;
+		
 		int size = reader.available();     //the total image size in byte
 		byte[] bb = new byte[Constant.blocksize];
 		String temp = null;
@@ -127,14 +128,14 @@ public class GenerateHash {
 				reader.read(bb);
 				temp = new String (bb);
 				bkdrabs = bkdrhasher.bkdrhash(temp);
+				apabs = aphasher.aphash(temp);	   
 				
-				apabs = aphasher.aphash(temp);	    	
 				tempbkdr = Long.toString(bkdrabs);
-				System.out.println("The length of bkdr abstract is: "+tempbkdr.length());
 				tempap = Long.toString(apabs);
-				System.out.println("The length of ap abstract is: "+tempap.length());
+				
 				tempcellbkdr = new Label (blocknum/Constant.COLUMNS,blocknum%Constant.COLUMNS, tempbkdr);
 				tempcellap = new Label (blocknum/Constant.COLUMNS,blocknum%Constant.COLUMNS, tempap);
+				
 				sheetbkdr.addCell(tempcellbkdr);
 				sheetap.addCell(tempcellap);
 				position += Constant.blocksize;

@@ -56,7 +56,12 @@ public class HashConflicts {
 		Long Duration = END_TIME - START_TIME;
 		System.out.println("The hash time is:"+ Duration);
 		FindConflicts finder = new FindConflicts();
+		
+		Long START_TIME1 = System.currentTimeMillis();
 		finder.find(Constant.file, Constant.hashtable);
+		Long END_TIME1 = System.currentTimeMillis();
+		Long Duration1 = END_TIME1 - START_TIME1;
+		System.out.println("The compare time is:"+ Duration1);
 		
 	}
 }
